@@ -1,4 +1,4 @@
-module femto (
+module tt_um_femto (
    input 	     clk,    // system clock 
    input 	     resetn, // reset button
 

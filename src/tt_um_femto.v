@@ -1,6 +1,7 @@
 module tt_um_femto (
    input 	     clk,    // system clock 
-   input 	     resetn, // reset button
+   input 	     rst_n, // reset button
+   input         ena,
 
    output        spi_mosi,
    input         spi_miso,
@@ -29,7 +30,7 @@ module tt_um_femto (
 
    FemtoRV32 CPU(
       .clk(clk),
-      .reset(resetn),		 
+	  .reset(rst_n),		 
       .mem_addr(mem_address),
       .mem_rdata(mem_rdata),
       .mem_rstrb(mem_rstrb),
@@ -61,7 +62,7 @@ module tt_um_femto (
    wire spi_ram_wbusy;
    MappedSPIRAM mapped_spi_ram(
       .clk(clk),
-      .reset(resetn),
+	   .reset(rst_n),
       .word_address(mem_address[21:2]),
       .wdata(mem_wdata),
       .rd(cs[6] & rd),
@@ -111,7 +112,7 @@ module tt_um_femto (
      .baud(115200)            // 57600 for gowin
    ) per_uart(
      .clk(clk), 
-     .rst(!resetn), 
+	  .rst(!rst_n), 
      .d_in(mem_wdata[7:0]), 
      .cs(cs[5]), 
      .addr(mem_address[4:0]), 
@@ -137,7 +138,7 @@ module tt_um_femto (
 
    peripheral_dpram dpram_p0( 
       .clk(clk),
-      .reset(!resetn),
+      .reset(!rst_n),
       .d_in(mem_wdata[15:0]),
       .cs(cs[6]),
       .addr(mem_address[15:0]),

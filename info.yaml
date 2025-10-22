@@ -5,7 +5,7 @@ project:
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "Femto RV32I is a compact and minimalist 32-bit RISC-V processor core implementing the RV32I base instruction set. Designed for simplicity and educational use, it features a single-cycle architecture suitable for small-scale silicon projects. The core is ideal for demonstrating RISC-V execution, experimenting with open-source toolchains, and integrating into Tiny Tapeout workflows. It supports basic instruction execution and can be extended with custom peripherals or memory interfaces."      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     30000000       # Clock frequency in Hz (or 0 if not applicable)
+  clock_hz:     3000000       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2

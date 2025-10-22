@@ -1,22 +1,30 @@
 module tt_um_femto (
-   input 	     clk,    // system clock 
-   input 	     rst_n, // reset button
-   input         ena,
 
-   output        spi_mosi,
-   input         spi_miso,
-   output        spi_cs_n,
-   output        spi_clk,
-
-   output      spi_clk_ram,      // SPI RAM Clock
-   output      spi_cs_n_ram,     // SPI RAM Chip Select, Active Low
-   input       spi_miso_ram,     // SPI RAM Master In Slave Out
-   output      spi_mosi_ram,     // SPI RAM Master Out Slave In
-
-   output        wire LEDS,   // system LEDs
-   input 	     RXD,    // UART receive
-   output 	     TXD     // UART transmit
+	input  wire [7:0] ui_in,
+    output wire [7:0] uo_out,
+    input  wire [7:0] uio_in,
+    output wire [7:0] uio_out,
+    output wire [7:0] uio_oe,
+    input  wire       ena,
+    input  wire       clk,
+    input  wire       rst_n
 );
+	// Map your internal signals to the IOs
+   wire RXD    = ui_in[0];
+   wire spi_miso = ui_in[1];
+   wire spi_miso_ram = ui_in[2];
+
+   assign uo_out[0] = TXD;
+   assign uo_out[1] = spi_mosi;
+   assign uo_out[2] = spi_cs_n;
+   assign uo_out[3] = spi_clk;
+   assign uo_out[4] = spi_clk_ram;
+   assign uo_out[5] = spi_cs_n_ram;
+   assign uo_out[6] = spi_mosi_ram;
+   assign uo_out[7] = LEDS;
+
+   assign uio_out = 0;
+   assign uio_oe  = 0;
    wire [31:0] mem_address;
    reg  [31:0] mem_rdata;
    wire mem_rstrb;

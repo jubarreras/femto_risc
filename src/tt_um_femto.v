@@ -1,6 +1,5 @@
 module tt_um_femto (
-
-	input  wire [7:0] ui_in,
+    input  wire [7:0] ui_in,
     output wire [7:0] uo_out,
     input  wire [7:0] uio_in,
     output wire [7:0] uio_out,
@@ -9,29 +8,40 @@ module tt_um_femto (
     input  wire       clk,
     input  wire       rst_n
 );
-	// Map your internal signals to the IOs
-   wire RXD    = ui_in[0];
-   wire spi_miso = ui_in[1];
-   wire spi_miso_ram = ui_in[2];
 
-   assign uo_out[0] = TXD;
-   assign uo_out[1] = spi_mosi;
-   assign uo_out[2] = spi_cs_n;
-   assign uo_out[3] = spi_clk;
-   assign uo_out[4] = spi_clk_ram;
-   assign uo_out[5] = spi_cs_n_ram;
-   assign uo_out[6] = spi_mosi_ram;
-   assign uo_out[7] = LEDS;
+    // Declaración explícita de señales internas
+    wire RXD           = ui_in[0];
+    wire spi_miso      = ui_in[1];
+    wire spi_miso_ram  = ui_in[2];
 
-   assign uio_out = 0;
-   assign uio_oe  = 0;
-   wire [31:0] mem_address;
-   reg  [31:0] mem_rdata;
-   wire mem_rstrb;
-   wire [31:0] mem_wdata;
-   wire [3:0]  mem_wmask;
+    wire TXD;
+    wire spi_mosi;
+    wire spi_cs_n;
+    wire spi_clk;
+    wire spi_clk_ram;
+    wire spi_cs_n_ram;
+    wire spi_mosi_ram;
+    wire LEDS;
 
-   wire mapped_spi_flash_rbusy;
+    assign uo_out[0] = TXD;
+    assign uo_out[1] = spi_mosi;
+    assign uo_out[2] = spi_cs_n;
+    assign uo_out[3] = spi_clk;
+    assign uo_out[4] = spi_clk_ram;
+    assign uo_out[5] = spi_cs_n_ram;
+    assign uo_out[6] = spi_mosi_ram;
+    assign uo_out[7] = LEDS;
+
+    assign uio_out = 0;
+    assign uio_oe  = 0;
+
+    wire [31:0] mem_address;
+    reg  [31:0] mem_rdata;
+    wire mem_rstrb;
+    wire [31:0] mem_wdata;
+    wire [3:0]  mem_wmask;
+    wire mapped_spi_flash_rbusy;
+
 
 
 

@@ -36,8 +36,16 @@ module tt_um_femto (
     wire [31:0] mem_wdata;
     wire [3:0]  mem_wmask;
     wire mapped_spi_flash_rbusy;
+	wire [31:0] RAM_rdata;
+    wire  wr = |mem_wmask;
+    wire  rd = mem_rstrb; 
+    wire spi_ram_rbusy;
+    wire spi_ram_wbusy;
+    wire [31:0] uart_dout;
+    wire [31:0] mult_dout;
+    wire [31:0] dpram_dout;
 	
-   FemtoRV32 CPU(
+	FemtoRV32 CPU(
       .clk(clk),
 	  .reset(rst_n),		 
       .mem_addr(mem_address),
@@ -48,11 +56,7 @@ module tt_um_femto (
       .mem_rbusy(mapped_spi_flash_rbusy | spi_ram_rbusy),
       .mem_wbusy(spi_ram_wbusy)
    );
-   wire [31:0] RAM_rdata;
-   wire  wr = |mem_wmask;
-   wire  rd = mem_rstrb; 
-   wire spi_ram_rbusy;
-   wire spi_ram_wbusy;
+	
    MappedSPIRAM mapped_spi_ram(
       .clk(clk),
 	   .reset(rst_n),
@@ -81,11 +85,7 @@ module tt_um_femto (
       .MISO(spi_miso),
       .MOSI(spi_mosi)   
    );
-
-   wire [31:0] uart_dout;
-   wire [31:0] mult_dout;
-   wire [31:0] dpram_dout;
-
+	
   peripheral_uart #(
      .clk_freq(27000000),    // 27000000 for gowin
      .baud(115200)            // 57600 for gowin

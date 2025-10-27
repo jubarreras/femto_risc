@@ -102,7 +102,7 @@ module tt_um_femto (
    
    MappedSPIFlash mapped_spi_flash(
       .clk(clk),
-      .reset(resetn),
+      .reset(rst_n),
       .rstrb(cs[0] & rd),
       .word_address(mem_address[21:2]),
       .rdata(RAM_rdata),
@@ -144,7 +144,7 @@ module tt_um_femto (
 /*
 	peripheral_mult mult1 (
 		.clk(clk), 
-		.reset(!resetn), 
+		.reset(!rst_n), 
 		.d_in(mem_wdata[15:0]), 
 		.cs(cs[3]), 
 		.addr(mem_address[4:0]), 

@@ -8,12 +8,10 @@ module tt_um_femto (
     input  wire       clk,
     input  wire       rst_n
 );
-
     // Declaración explícita de señales internas
     wire RXD           = ui_in[0];
     wire spi_miso      = ui_in[1];
     wire spi_miso_ram  = ui_in[2];
-
     wire TXD;
     wire spi_mosi;
     wire spi_cs_n;
@@ -22,7 +20,6 @@ module tt_um_femto (
     wire spi_cs_n_ram;
     wire spi_mosi_ram;
     wire LEDS;
-
     assign uo_out[0] = TXD;
     assign uo_out[1] = spi_mosi;
     assign uo_out[2] = spi_cs_n;
@@ -31,21 +28,15 @@ module tt_um_femto (
     assign uo_out[5] = spi_cs_n_ram;
     assign uo_out[6] = spi_mosi_ram;
     assign uo_out[7] = LEDS;
-
     assign uio_out = 0;
     assign uio_oe  = 0;
-
     wire [31:0] mem_address;
     reg  [31:0] mem_rdata;
     wire mem_rstrb;
     wire [31:0] mem_wdata;
     wire [3:0]  mem_wmask;
     wire mapped_spi_flash_rbusy;
-
-
-
-
-
+	
    FemtoRV32 CPU(
       .clk(clk),
 	  .reset(rst_n),		 
@@ -60,22 +51,6 @@ module tt_um_femto (
    wire [31:0] RAM_rdata;
    wire  wr = |mem_wmask;
    wire  rd = mem_rstrb; 
-
-/*
-   bram RAM(
-      .clk(clk),
-      .mem_addr(mem_address[6:2]),
-      .mem_rdata(dpram_dout),
-      .cs(cs[6]),
-      .rd(rd),
-      .wr(wr),
-      .mem_wdata(mem_wdata)
-      //.mem_wmask( { 4{ cs[6] } } & mem_wmask )
-   );
-
-*/
-
-
    wire spi_ram_rbusy;
    wire spi_ram_wbusy;
    MappedSPIRAM mapped_spi_ram(
@@ -93,12 +68,6 @@ module tt_um_femto (
       .MOSI(spi_mosi_ram),
       .rdata(dpram_dout)
    );
-//   wire [31:0] spi_ram_dout;
-
-
-
-   //wire [31:0] mapped_spi_flash_rdata;
-
    
    MappedSPIFlash mapped_spi_flash(
       .clk(clk),
@@ -110,20 +79,12 @@ module tt_um_femto (
       .CLK(spi_clk),
       .CS_N(spi_cs_n),
       .MISO(spi_miso),
-      .MOSI(spi_mosi)
-      
+      .MOSI(spi_mosi)   
    );
 
-
-
-
    wire [31:0] uart_dout;
-//   wire [31:0] gpio_dout;
    wire [31:0] mult_dout;
-//   wire [31:0] div_dout;
-//   wire [31:0] bin2bcd_dout;
    wire [31:0] dpram_dout;
-
 
   peripheral_uart #(
      .clk_freq(27000000),    // 27000000 for gowin
@@ -140,36 +101,6 @@ module tt_um_femto (
      .uart_rx(RXD), 
      .ledout(LEDS)
    ); 
-
-/*
-	peripheral_mult mult1 (
-		.clk(clk), 
-		.reset(!rst_n), 
-		.d_in(mem_wdata[15:0]), 
-		.cs(cs[3]), 
-		.addr(mem_address[4:0]), 
-		.rd(rd), 
-		.wr(wr), 
-		.d_out(mult_dout) 
-	);
-
-
-   peripheral_dpram dpram_p0( 
-      .clk(clk),
-      .reset(!rst_n),
-      .d_in(mem_wdata[15:0]),
-      .cs(cs[6]),
-      .addr(mem_address[15:0]),
-      .rd(rd),
-      .wr(wr),
-      .d_out(dpram_dout)
-  );
-*/
-
-  // ============== Chip_Select (Addres decoder) ======================== 
-  // se hace con los 8 bits mas significativos de mem_addr
-  // Se asigna el rango de la memoria de programa 0x00000000 - 0x003FFFFF
-  // ====================================================================
   reg [6:0]cs;  // CHIP-SELECT
   always @*
   begin
@@ -190,10 +121,7 @@ module tt_um_femto (
       case (cs)
         7'b1000000: mem_rdata = dpram_dout;
         7'b0100000: mem_rdata = uart_dout;
-//        7'b0010000: mem_rdata = gpio_dout;
         7'b0001000: mem_rdata = mult_dout;
-//        7'b0000100: mem_rdata = div_dout;
-//        7'b0000010: mem_rdata = bin2bcd_dout;
         7'b0000001: mem_rdata = RAM_rdata;
         default:    mem_rdata = 32'h00000000;
       endcase
@@ -209,5 +137,14 @@ module tt_um_femto (
    end
 `endif
 
+	// Flip-flop dummy para asegurar lógica secuencial
+reg [7:0] dummy_ff;
+
+always @(posedge clk) begin
+  if (!rst_n)
+    dummy_ff <= 8'h00;
+  else
+    dummy_ff <= ui_in;
+end
 
 endmodule

@@ -16,29 +16,21 @@ module MappedSPIFlash(
     input  wire        MISO  // master in slave out (data received from flash)
 );
 
-
  parameter START      = 3'b000;
  parameter WAIT_STRB  = 3'b001;
  parameter SEND       = 3'b010;
  parameter RECEIVE    = 3'b011;
  //parameter END        = 3'b100;
-
  parameter divisor    = 2;
 
-
- 
  reg [2:0] state;
  reg clk_div;
-
-
 
    reg [5:0]  snd_bitcount;
    reg [31:0] cmd_addr;
    reg [5:0]  rcv_bitcount;
    reg [31:0] rcv_data;
-
    reg [5:0]  div_counter;
-
 
 always @(negedge clk) begin
     if (!reset) begin
@@ -54,7 +46,6 @@ always @(negedge clk) begin
         clk_div      <= 0;
         div_counter  <=  div_counter + 1;
       end
-      
     end
 end
 
@@ -65,8 +56,7 @@ always @(negedge clk) begin
     else begin
       if ( (div_counter == divisor/2) | ( div_counter == divisor )   ) begin
         CLK  <= ~CLK;
-      end
-      
+      end   
     end
 end
 
@@ -75,7 +65,7 @@ end
 
 always @(negedge clk) begin
     if (!reset) begin
-      state     <= START;
+      state    <= START;
       rbusy    <= 1'b0;
       rcv_data <= 0;
       CS_N     <= 1; 
@@ -88,17 +78,15 @@ always @(negedge clk) begin
         snd_bitcount <= 6'd0;
         rcv_bitcount <= 6'd0;
         state        <= WAIT_STRB;
-
       end
 
       WAIT_STRB: begin
         if (rstrb) begin
-          CS_N         <= 1'b1;
+          CS_N         <= 1'b0;
           rbusy        <= 1'b1;
           snd_bitcount <= 6'd32;
           cmd_addr     <= {8'h03, 2'b00,word_address[19:0], 2'b00};
-          CS_N         <= 1'b0;
-          state         <= SEND;
+          state        <= SEND;
 
         end
         else begin
@@ -119,8 +107,6 @@ always @(negedge clk) begin
             end
         end
       end
-    
-
 
       RECEIVE: begin
         if(clk_div) begin
@@ -141,8 +127,6 @@ always @(negedge clk) begin
     endcase
   end
 end
-
-
    assign  MOSI  = cmd_addr[31];
 
 //   assign  CLK   = !CS_N && !clk; // CLK needs to be inverted (sample on posedge, shift of negedge) 
@@ -150,8 +134,5 @@ end
 
    // since least significant bytes are read first, we need to swizzle...
    assign rdata = {rcv_data[7:0],rcv_data[15:8],rcv_data[23:16],rcv_data[31:24]};
-
-
-
 
 endmodule

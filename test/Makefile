@@ -5,7 +5,7 @@
 SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES = femto.v femtorv32_quark.v perip_uart.v uart.v MappedSPIFlash.v MappedSPIRAM.v
 
 ifneq ($(GATES),yes)
 
